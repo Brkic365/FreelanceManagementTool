@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Ensure the mainBorderPane has its fx:id -->
+<BorderPane fx:id="mainBorderPane" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="hr.tvz.java.freelance.freelancemanagementtool.controller.MainController">
+    <top>
+        <MenuBar fx:id="menuBar">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem onAction="#logout" mnemonicParsing="false" text="Logout"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="View">
+                    <items>
+                        <!-- Ensure onAction is set for Projects -->
+                        <MenuItem onAction="#showProjects" mnemonicParsing="false" text="Projects"/>
+                        <!-- Ensure onAction is set for Clients -->
+                        <MenuItem onAction="#showClients" mnemonicParsing="false" text="Clients"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="adminMenu" mnemonicParsing="false" text="Admin">
+                    <items>
+                        <!-- Ensure onAction is set for Audit Log -->
+                        <MenuItem onAction="#showAuditLog" mnemonicParsing="false" text="View Audit Log"/>
+                        <!-- Ensure onAction is set for User Management -->
+                        <MenuItem onAction="#showUserManagement" mnemonicParsing="false" text="Manage Users"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 24px;"/>
+            <Label text="Select an option from the menu to get started."/>
+        </VBox>
+    </center>
+</BorderPane>

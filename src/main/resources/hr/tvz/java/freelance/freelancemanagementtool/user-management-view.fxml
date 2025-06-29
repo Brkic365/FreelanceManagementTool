@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.java.freelance.freelancemanagementtool.controller.UserManagementController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <children>
+        <Label text="User Management">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Label>
+        <TableView fx:id="usersTableView" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="usernameColumn" prefWidth="150.0" text="Username" />
+                <TableColumn fx:id="roleColumn" prefWidth="100.0" text="Role" />
+            </columns>
+        </TableView>
+        <GridPane hgap="10" vgap="10">
+            <Label text="Username:" GridPane.rowIndex="0" />
+            <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Password:" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Role:" GridPane.rowIndex="2" />
+            <ComboBox fx:id="roleComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button onAction="#handleAddNewUser" text="Add New User" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        </GridPane>
+        <Separator prefWidth="200.0" />
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Button onAction="#handleDeleteUser" text="Delete Selected User" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.java.freelance.freelancemanagementtool.controller.AuditLogController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <children>
+        <Label text="Application Change History">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Label>
+        <TableView fx:id="auditLogTableView" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="timestampColumn" prefWidth="150.0" text="Timestamp" />
+                <TableColumn fx:id="roleColumn" prefWidth="75.0" text="User Role" />
+                <TableColumn fx:id="entityColumn" prefWidth="100.0" text="Entity" />
+                <TableColumn fx:id="oldValueColumn" prefWidth="200.0" text="Old Value" />
+                <TableColumn fx:id="newValueColumn" prefWidth="200.0" text="New Value" />
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+    </children>
+</VBox>

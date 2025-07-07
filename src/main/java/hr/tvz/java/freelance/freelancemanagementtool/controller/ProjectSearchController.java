@@ -6,6 +6,7 @@ import hr.tvz.java.freelance.freelancemanagementtool.model.Client;
 import hr.tvz.java.freelance.freelancemanagementtool.model.Project;
 import hr.tvz.java.freelance.freelancemanagementtool.repository.ClientDatabaseRepository;
 import hr.tvz.java.freelance.freelancemanagementtool.repository.ProjectDatabaseRepository;
+import hr.tvz.java.freelance.freelancemanagementtool.util.Config;
 import hr.tvz.java.freelance.freelancemanagementtool.util.DialogHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -210,7 +211,7 @@ public class ProjectSearchController {
      */
     private void styleAlert(Alert alert) {
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/hr/tvz/java/freelance/freelancemanagementtool/css/styles.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource(Config.CSS_STYLESHEET).toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
     }
 }

@@ -3,6 +3,7 @@ package hr.tvz.java.freelance.freelancemanagementtool.controller;
 import hr.tvz.java.freelance.freelancemanagementtool.enums.UserRole;
 import hr.tvz.java.freelance.freelancemanagementtool.model.AuditLog;
 import hr.tvz.java.freelance.freelancemanagementtool.repository.AuditLogRepository;
+import hr.tvz.java.freelance.freelancemanagementtool.util.Config;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -95,7 +96,7 @@ public class AuditLogController {
         alert.setHeaderText("Full details for change on '" + log.entityName() + "'");
 
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/hr/tvz/java/freelance/freelancemanagementtool/css/styles.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource(Config.CSS_STYLESHEET).toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
 
         dialogPane.setContent(createDetailsPane(log));

@@ -2,6 +2,7 @@ package hr.tvz.java.freelance.freelancemanagementtool;
 
 import hr.tvz.java.freelance.freelancemanagementtool.repository.AuditLogRepository;
 import hr.tvz.java.freelance.freelancemanagementtool.thread.DeadlineReminderThread;
+import hr.tvz.java.freelance.freelancemanagementtool.util.Config;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,7 +20,7 @@ public class FreelanceManagementApplication extends Application {
     private static final Logger logger = LoggerFactory.getLogger(FreelanceManagementApplication.class);
     private static Stage mainStage;
 
-    private static final String CSS_PATH = "/hr/tvz/java/freelance/freelancemanagementtool/css/styles.css";
+    private static final String CSS_PATH = Config.CSS_STYLESHEET;
 
     /**
      * Entry point for setting up the primary stage

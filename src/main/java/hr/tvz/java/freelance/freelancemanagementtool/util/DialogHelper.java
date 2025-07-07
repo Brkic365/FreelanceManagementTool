@@ -21,6 +21,13 @@ public class DialogHelper {
     private static final Logger logger = LoggerFactory.getLogger(DialogHelper.class);
 
     /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
+    private DialogHelper() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    /**
      * Opens modal dialog
      *
      * @param fxmlFile FXML file name
@@ -33,7 +40,7 @@ public class DialogHelper {
         try {
             FXMLLoader loader = new FXMLLoader(FreelanceManagementApplication.class.getResource(fxmlFile));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(DialogHelper.class.getResource("/hr/tvz/java/freelance/freelancemanagementtool/css/styles.css").toExternalForm());
+            scene.getStylesheets().add(DialogHelper.class.getResource(Config.CSS_STYLESHEET).toExternalForm());
 
             EditController<T> controller = loader.getController();
             if (entity != null) {

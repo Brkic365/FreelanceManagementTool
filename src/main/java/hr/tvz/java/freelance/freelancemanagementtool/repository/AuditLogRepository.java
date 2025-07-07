@@ -68,8 +68,7 @@ public class AuditLogRepository {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
             if (obj instanceof List) {
-                List<AuditLog> logs = (List<AuditLog>) obj;
-                return logs;
+                return (List<AuditLog>) obj;
             }
         } catch (FileNotFoundException e) {
             logger.info("Audit log file not found, will be created on first write. This is normal.", e);

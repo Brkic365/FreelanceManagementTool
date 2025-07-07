@@ -3,7 +3,6 @@ package hr.tvz.java.freelance.freelancemanagementtool.controller;
 import hr.tvz.java.freelance.freelancemanagementtool.model.Client;
 import hr.tvz.java.freelance.freelancemanagementtool.repository.ClientDatabaseRepository;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;

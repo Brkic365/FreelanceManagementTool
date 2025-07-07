@@ -5,6 +5,7 @@ import hr.tvz.java.freelance.freelancemanagementtool.enums.UserRole;
 import hr.tvz.java.freelance.freelancemanagementtool.exception.UserNotFoundException;
 import hr.tvz.java.freelance.freelancemanagementtool.repository.UserRepository;
 import hr.tvz.java.freelance.freelancemanagementtool.session.SessionManager;
+import hr.tvz.java.freelance.freelancemanagementtool.util.Config;
 import hr.tvz.java.freelance.freelancemanagementtool.util.Pair;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -69,7 +70,7 @@ public class LoginController {
             FXMLLoader fxmlLoader = new FXMLLoader(FreelanceManagementApplication.class.getResource("main-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 800, 600);
 
-            scene.getStylesheets().add(getClass().getResource("/hr/tvz/java/freelance/freelancemanagementtool/css/styles.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource(Config.CSS_STYLESHEET).toExternalForm());
 
             FreelanceManagementApplication.getMainStage().setTitle("Dashboard - Freelance Tool");
             FreelanceManagementApplication.getMainStage().setScene(scene);

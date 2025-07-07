@@ -96,7 +96,6 @@ public class MainController {
 
     /**
      * A generic helper method to load an FXML view into the center of the BorderPane.
-     * This reduces code duplication.
      *
      * @param fxmlFileName The name of the FXML file to load.
      * @param viewName A friendly name for logging purposes.

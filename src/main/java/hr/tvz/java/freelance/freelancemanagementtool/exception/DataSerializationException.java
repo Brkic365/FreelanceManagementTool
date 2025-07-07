@@ -1,4 +1,3 @@
-// File: exception/DataSerializationException.java
 package hr.tvz.java.freelance.freelancemanagementtool.exception;
 
 /**

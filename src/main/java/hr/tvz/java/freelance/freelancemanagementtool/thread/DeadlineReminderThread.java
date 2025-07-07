@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A background thread that periodically checks for projects with upcoming deadlines.
@@ -24,13 +26,18 @@ public class DeadlineReminderThread extends Thread {
 
     private final ProjectDatabaseRepository projectRepository;
 
+    private final Set<Long> notifiedProjectIds = new HashSet<>();
+
+    /**
+     * Deadline reminder constructor
+     */
     public DeadlineReminderThread() {
         this.projectRepository = new ProjectDatabaseRepository();
-        setDaemon(true); // Ensures this thread doesn't prevent the app from exiting
+        setDaemon(true);
     }
 
     /**
-     * The main execution logic for the thread.
+     * Function called at start of the thread
      */
     @Override
     public void run() {
@@ -41,7 +48,7 @@ public class DeadlineReminderThread extends Thread {
                 Thread.sleep(SLEEP_INTERVAL_MS);
             } catch (InterruptedException e) {
                 logger.warn("DeadlineReminderThread was interrupted and will now exit.");
-                Thread.currentThread().interrupt(); // Preserve the interrupted status
+                Thread.currentThread().interrupt();
             } catch (DatabaseReadException e) {
                 logger.error("Error reading projects from database in reminder thread.", e);
             }
@@ -49,8 +56,8 @@ public class DeadlineReminderThread extends Thread {
     }
 
     /**
-     * Fetches projects and checks for deadlines within the threshold.
-     * If any are found, it displays an alert on the JavaFX Application Thread.
+     * Fetches projects and checks for deadlines. If an upcoming deadline is found for a project
+     * that has not yet been notified about in this session, it displays an alert.
      */
     private void checkForUpcomingDeadlines() throws DatabaseReadException {
         logger.debug("Checking for upcoming deadlines...");
@@ -60,11 +67,14 @@ public class DeadlineReminderThread extends Thread {
 
         for (Project project : activeProjects) {
             long daysUntilDeadline = ChronoUnit.DAYS.between(LocalDate.now(), project.getDeadline());
-            if (daysUntilDeadline > 0 && daysUntilDeadline <= DEADLINE_THRESHOLD_DAYS) {
-                String message = String.format("Project '%s' is due in %d day(s)!", project.getName(), daysUntilDeadline);
-                logger.info("Deadline alert: {}", message);
 
-                // Guideline #11: Updating the UI from a background thread must use Platform.runLater
+            if (daysUntilDeadline <= DEADLINE_THRESHOLD_DAYS && daysUntilDeadline >= 0 && !notifiedProjectIds.contains(project.getId())) {
+
+                String message = String.format("Project '%s' is due in %d day(s)!", project.getName(), daysUntilDeadline);
+                logger.info("Deadline alert being triggered for project ID {}: {}", project.getId(), message);
+
+                notifiedProjectIds.add(project.getId());
+
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Deadline Reminder");

@@ -28,23 +28,38 @@ public final class User extends Entity {
 
     /**
      * Constructor for creating a new user object before it is saved to the database.
-     * The ID is not yet known, and the password is in plain text.
+     * The ID is set to 0 and the password is in plain text, since it will be updated by the repository.
      *
      * @param username The user's username.
      * @param plainTextPassword The user's password in plain text.
      * @param role The user's role.
      */
     public User(String username, String plainTextPassword, UserRole role) {
-        super(0L); // Use a temporary ID of 0; the database will generate the real one.
+        super(0L);
         this.username = username;
-        this.hashedPassword = plainTextPassword; // Store plain text temporarily; repository will hash it.
+        this.hashedPassword = plainTextPassword;
         this.role = role;
     }
 
-
-    // --- Getters ---
+    /**
+     * Gets the user's username
+     *
+     * @return Username string
+     */
     public String getUsername() { return username; }
+
+    /**
+     * Gets the user's hashed password
+     *
+     * @return Hashed password string
+     */
     public String getHashedPassword() { return hashedPassword; }
+
+    /**
+     * Gets the user's role
+     *
+     * @return User role value
+     */
     public UserRole getRole() { return role; }
 
 
@@ -57,20 +72,40 @@ public final class User extends Entity {
         private String hashedPassword;
         private UserRole role;
 
+        /**
+         * Builder constructor
+         *
+         * @param id ID of the project
+         */
         public Builder(long id) {
             this.id = id;
         }
 
+        /**
+         * Builder username setter
+         *
+         * @param username Username of the user
+         */
         public Builder withUsername(String username) {
             this.username = username;
             return this;
         }
 
+        /**
+         * Builder hashed password setter
+         *
+         * @param hashedPassword Hashed password of the user
+         */
         public Builder withHashedPassword(String hashedPassword) {
             this.hashedPassword = hashedPassword;
             return this;
         }
 
+        /**
+         * Builder role setter
+         *
+         * @param role Role of the user
+         */
         public Builder withRole(UserRole role) {
             this.role = role;
             return this;
@@ -78,6 +113,7 @@ public final class User extends Entity {
 
         /**
          * Builds and returns a new User object from the builder's state.
+         *
          * @return A new, configured User instance.
          */
         public User build() {

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,8 +49,6 @@ public class AuditLogRepository {
             oos.writeObject(logs);
             logger.info("Successfully wrote audit log entry for entity: {}", newLog.entityName());
         } catch (IOException e) {
-            logger.error("Failed to serialize or write audit log to file.", e);
-            // This is an unchecked exception because it indicates a serious runtime file system issue.
             throw new DataSerializationException("Failed to write audit log.", e);
         }
     }
@@ -71,26 +68,23 @@ public class AuditLogRepository {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
             if (obj instanceof List) {
-                // The type cast is safe due to the check
-                @SuppressWarnings("unchecked")
                 List<AuditLog> logs = (List<AuditLog>) obj;
                 return logs;
             }
         } catch (FileNotFoundException e) {
-            logger.info("Audit log file not found, will be created on first write. This is normal.");
+            logger.info("Audit log file not found, will be created on first write. This is normal.", e);
         } catch (EOFException e) {
-            logger.warn("Audit log file is empty or corrupted, starting fresh.");
+            logger.warn("Audit log file is empty or corrupted, starting fresh.", e);
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("Failed to deserialize or read audit log file.", e);
             throw new DataSerializationException("Failed to read audit log.", e);
         }
 
-        return new ArrayList<>(); // Return empty list on failure or if file is empty
+        return new ArrayList<>();
     }
 
 
     /**
-     * Shuts down the executor service gracefully.
+     * Shuts down the executor service.
      * This should be called when the application is closing to ensure
      * all pending log writes are completed.
      */

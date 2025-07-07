@@ -20,7 +20,7 @@
         </Label>
         <TextField fx:id="usernameField" promptText="Username" />
         <PasswordField fx:id="passwordField" promptText="Password" />
-        <Button mnemonicParsing="false" onAction="#handleLogin" text="Login" />
+        <Button mnemonicParsing="false" onAction="#handleLogin" text="Login" styleClass="button-primary" />
         <Label fx:id="errorLabel" textFill="RED" />
     </children>
 </VBox>

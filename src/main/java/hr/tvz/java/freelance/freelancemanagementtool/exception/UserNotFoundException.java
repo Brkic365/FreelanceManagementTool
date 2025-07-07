@@ -1,4 +1,3 @@
-// File: exception/UserNotFoundException.java
 package hr.tvz.java.freelance.freelancemanagementtool.exception;
 
 /**

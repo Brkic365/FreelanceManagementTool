@@ -3,8 +3,6 @@ package hr.tvz.java.freelance.freelancemanagementtool.repository;
 import hr.tvz.java.freelance.freelancemanagementtool.database.DatabaseConnection;
 import hr.tvz.java.freelance.freelancemanagementtool.exception.DatabaseReadException;
 import hr.tvz.java.freelance.freelancemanagementtool.model.Client;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.*;
@@ -13,19 +11,29 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implements the CrudRepository for Client entities, using a JDBC connection.
+ * Implements the CrudRepository for Client entities.
+ * It extends the BaseRepository and provides the specific SQL queries and mapping logic for Clients.
  */
-public class ClientDatabaseRepository implements CrudRepository<Client, Long> {
-
-    private static final Logger logger = LoggerFactory.getLogger(ClientDatabaseRepository.class);
+public class ClientDatabaseRepository extends BaseRepository<Client> {
 
     /**
-     * Maps a ResultSet row to a Client object.
-     * @param rs The ResultSet from which to map data.
-     * @return A new Client object.
-     * @throws SQLException if a database access error occurs.
+     * Overrides the base repository function and returns "Client" as the entity name
+     *
+     * @return Entity name string
      */
-    private Client mapResultSetToClient(ResultSet rs) throws SQLException {
+    @Override
+    protected String getEntityName() {
+        return "Client";
+    }
+
+    /**
+     * Converts a result set to a client object
+     *
+     * @param rs Result set containing the client values
+     * @return Client object
+     * @throws SQLException SQL Exception
+     */
+    private Client mapResultSetToEntity(ResultSet rs) throws SQLException {
         return new Client(
                 rs.getLong("id"),
                 rs.getString("name"),
@@ -35,53 +43,123 @@ public class ClientDatabaseRepository implements CrudRepository<Client, Long> {
     }
 
     /**
-     * {@inheritDoc}
+     * Finds all clients
+     *
+     * @return List of all clients
+     * @throws DatabaseReadException Custom database exception
      */
     @Override
     public List<Client> findAll() throws DatabaseReadException {
         List<Client> clients = new ArrayList<>();
-        String sql = "SELECT * FROM CLIENTS";
+        String sql = "SELECT id, name, email, contact_person FROM CLIENTS ORDER BY name ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                clients.add(mapResultSetToClient(rs));
+                clients.add(mapResultSetToEntity(rs));
             }
             logger.info("Successfully retrieved {} clients from the database.", clients.size());
         } catch (SQLException | IOException e) {
             String errorMessage = "Failed to fetch all clients from database.";
-            logger.error(errorMessage, e);
             throw new DatabaseReadException(errorMessage, e);
         }
         return clients;
     }
 
     /**
-     * {@inheritDoc}
+     * Find the client by ID
+     *
+     * @param id The ID of the entity to retrieve.
+     * @return Optional value of the client
+     * @throws DatabaseReadException Custom database exception
      */
     @Override
     public Optional<Client> findById(Long id) throws DatabaseReadException {
-        String sql = "SELECT * FROM CLIENTS WHERE id = ?";
+        String sql = "SELECT id, name, email, contact_person FROM CLIENTS WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setLong(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(mapResultSetToClient(rs));
+                    return Optional.of(mapResultSetToEntity(rs));
                 }
             }
         } catch (SQLException | IOException e) {
             String errorMessage = "Failed to find client by ID: " + id;
-            logger.error(errorMessage, e);
             throw new DatabaseReadException(errorMessage, e);
         }
         return Optional.empty();
     }
 
-    // We will implement save, update, delete later if we build a Client management screen.
-    @Override public Client save(Client entity) { return null; }
-    @Override public void deleteById(Long id) { }
-    @Override public Client update(Client entity) { return null; }
+    /**
+     * Saves the client to database
+     *
+     * @param client The entity to save.
+     * @return Client object
+     */
+    @Override
+    public Client save(Client client) {
+        String sql = "INSERT INTO CLIENTS (name, email, contact_person) VALUES (?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, client.getName());
+            stmt.setString(2, client.getEmail());
+            stmt.setString(3, client.getContactPerson());
+            stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    client.setId(generatedKeys.getLong(1));
+                    logAudit("N/A", client.toString());
+                }
+            }
+        } catch (SQLException | IOException e) {
+            logger.error("Failed to save client: {}", client.getName(), e);
+        }
+        return client;
+    }
+
+    /**
+     * Updates the Client in the database
+     *
+     * @param client The entity with updated information.
+     * @return Client object
+     */
+    @Override
+    public Client update(Client client) {
+        String oldValue = findOldValue(client.getId());
+        String sql = "UPDATE CLIENTS SET name = ?, email = ?, contact_person = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, client.getName());
+            stmt.setString(2, client.getEmail());
+            stmt.setString(3, client.getContactPerson());
+            stmt.setLong(4, client.getId());
+            stmt.executeUpdate();
+            logAudit(oldValue, client.toString());
+        } catch (SQLException | IOException e) {
+            logger.error("Failed to update client with ID: {}", client.getId(), e);
+        }
+        return client;
+    }
+
+    /**
+     * Deletes the client using his ID
+     *
+     * @param id The ID of the entity to delete.
+     */
+    @Override
+    public void deleteById(Long id) {
+        String oldValue = findOldValue(id);
+        String sql = "DELETE FROM CLIENTS WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, id);
+            if (stmt.executeUpdate() > 0) {
+                logAudit(oldValue, "DELETED");
+            }
+        } catch (SQLException | IOException e) {
+            logger.error("Failed to delete client with ID: {}", id, e);
+        }
+    }
 }

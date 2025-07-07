@@ -20,7 +20,7 @@ public final class SessionManager {
      * Logs a user in by setting their session details.
      *
      * @param userId The ID of the logged-in user.
-     * @param role   The role of the logged-in user.
+     * @param role The role of the logged-in user.
      */
     public static void login(Long userId, UserRole role) {
         currentUserId = userId;

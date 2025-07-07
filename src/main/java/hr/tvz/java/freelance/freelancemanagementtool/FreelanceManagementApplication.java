@@ -19,44 +19,45 @@ public class FreelanceManagementApplication extends Application {
     private static final Logger logger = LoggerFactory.getLogger(FreelanceManagementApplication.class);
     private static Stage mainStage;
 
+    private static final String CSS_PATH = "/hr/tvz/java/freelance/freelancemanagementtool/css/styles.css";
+
     /**
-     * Starts the JavaFX application, setting up the initial stage and showing the login screen.
-     *
-     * @param stage The primary stage for this application.
-     * @throws IOException if the login FXML file cannot be loaded.
+     * Entry point for setting up the primary stage
      */
     @Override
+    @SuppressWarnings("java:S2696")
     public void start(Stage stage) throws IOException {
         mainStage = stage;
+
         FXMLLoader fxmlLoader = new FXMLLoader(FreelanceManagementApplication.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 400, 300);
-        stage.setTitle("Login - Freelance Tool");
-        stage.setScene(scene);
-        stage.show();
+
+        scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+
+        mainStage.setTitle("Login - Freelance Tool");
+        mainStage.setScene(scene);
+        mainStage.show();
         logger.info("Application started, showing login screen.");
-
-        // Guideline #11: Start the background thread
         new DeadlineReminderThread().start();
-
-        stage.setOnCloseRequest(event -> {
+        mainStage.setOnCloseRequest(event -> {
             AuditLogRepository.shutdown();
             logger.info("Application closing, shutdown hooks initiated.");
         });
     }
 
     /**
-     * The main method, which launches the JavaFX application.
+     * Main function
      *
-     * @param args Command line arguments.
+     * @param args Props
      */
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 
     /**
-     * Returns the primary stage of the application.
+     * Gets the main stage object
      *
-     * @return The main Stage object.
+     * @return Main stage object
      */
     public static Stage getMainStage() {
         return mainStage;

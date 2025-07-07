@@ -1,4 +1,3 @@
-// File: util/Pair.java
 package hr.tvz.java.freelance.freelancemanagementtool.util;
 
 /**
@@ -10,15 +9,31 @@ public class Pair<K, V> {
     private final K key;
     private final V value;
 
+    /**
+     * Pair constructor
+     *
+     * @param key Key
+     * @param value Value
+     */
     public Pair(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
+    /**
+     * Gets the key
+     *
+     * @return Key
+     */
     public K getKey() {
         return key;
     }
 
+    /**
+     * Gets the value
+     *
+     * @return Value
+     */
     public V getValue() {
         return value;
     }

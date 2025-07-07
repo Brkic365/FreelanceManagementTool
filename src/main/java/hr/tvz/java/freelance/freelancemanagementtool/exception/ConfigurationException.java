@@ -1,4 +1,3 @@
-// File: exception/ConfigurationException.java
 package hr.tvz.java.freelance.freelancemanagementtool.exception;
 
 /**

@@ -9,9 +9,9 @@ import java.util.Optional;
  * Defines the standard CRUD (Create, Read, Update, Delete) operations for a repository.
  *
  * @param <T> The entity type this repository manages, must extend Entity.
- * @param <ID> The type of the entity's ID.
+ * @param <I> The type of the entity's ID.
  */
-public interface CrudRepository<T extends Entity, ID> {
+public interface CrudRepository<T extends Entity, I> {
 
     /**
      * Saves a given entity.
@@ -36,14 +36,14 @@ public interface CrudRepository<T extends Entity, ID> {
      * @return An Optional containing the entity if found, otherwise empty.
      * @throws DatabaseReadException if an error occurs while reading from the database.
      */
-    Optional<T> findById(ID id) throws DatabaseReadException;
+    Optional<T> findById(I id)   throws DatabaseReadException;
 
     /**
      * Deletes an entity by its ID.
      *
      * @param id The ID of the entity to delete.
      */
-    void deleteById(ID id);
+    void deleteById(I id);
 
     /**
      * Updates a given entity.

@@ -1,4 +1,3 @@
-// File: exception/DatabaseReadException.java
 package hr.tvz.java.freelance.freelancemanagementtool.exception;
 
 /**

@@ -5,6 +5,7 @@ import hr.tvz.java.freelance.freelancemanagementtool.database.DatabaseConnection
 import hr.tvz.java.freelance.freelancemanagementtool.enums.UserRole;
 import hr.tvz.java.freelance.freelancemanagementtool.exception.DatabaseReadException;
 import hr.tvz.java.freelance.freelancemanagementtool.model.User;
+import hr.tvz.java.freelance.freelancemanagementtool.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import hr.tvz.java.freelance.freelancemanagementtool.util.Pair;
-
 /**
  * Implements the CrudRepository for User entities, using a JDBC connection.
  * Handles all database operations for users.
@@ -24,6 +23,13 @@ public class UserDatabaseRepository implements CrudRepository<User, Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDatabaseRepository.class);
 
+    /**
+     * Converts a result set to a user object
+     *
+     * @param rs Result set containing the user values
+     * @return User object
+     * @throws SQLException SQL Exception
+     */
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         return new User.Builder(rs.getLong("id"))
                 .withUsername(rs.getString("username"))
@@ -32,10 +38,16 @@ public class UserDatabaseRepository implements CrudRepository<User, Long> {
                 .build();
     }
 
+    /**
+     * Finds all users
+     *
+     * @return List of all users
+     * @throws DatabaseReadException Custom database exception
+     */
     @Override
     public List<User> findAll() throws DatabaseReadException {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM USERS";
+        String sql = "SELECT id, username, hashed_password, role FROM USERS";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -48,11 +60,22 @@ public class UserDatabaseRepository implements CrudRepository<User, Long> {
         return users;
     }
 
+    /**
+     * Saves the user to the database
+     *
+     * @param user The entity to save.
+     * @return User object
+     */
     @Override
     public User save(User user) {
         return saveAndReturnHashedPassword(user).getKey();
     }
 
+    /**
+     * Deletes the user using his ID
+     *
+     * @param id The ID of the entity to delete.
+     */
     @Override
     public void deleteById(Long id) {
         if (id == 1L) {
@@ -70,26 +93,37 @@ public class UserDatabaseRepository implements CrudRepository<User, Long> {
         }
     }
 
+    /**
+     * Minimal function to satisfy CRUD requirements
+     *
+     * @param id The ID of the entity to retrieve.
+     * @return Empty Optional
+     */
     @Override public Optional<User> findById(Long id) { return Optional.empty(); }
+
+    /**
+     * Minimal function to satisfy CRUD requirements
+     *
+     * @param entity The entity with updated information.
+     * @return Null value
+     */
     @Override public User update(User entity) { return null; }
 
     /**
-     * Saves a new user to the database.
+     * Saves the user to database and returns the Pair object with user and hashed password
      *
-     * @param user The user object, containing a plain-text password.
-     * @return A Pair containing the saved User object (with its new ID) and the hashed password.
+     * @param user User object
+     * @return Pair with user as key and hashed password as value
      */
     public Pair<User, String> saveAndReturnHashedPassword(User user) {
         String hashedPassword = BCrypt.withDefaults().hashToString(12, user.getHashedPassword().toCharArray());
         String sql = "INSERT INTO USERS (username, hashed_password, role) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             stmt.setString(1, user.getUsername());
             stmt.setString(2, hashedPassword);
             stmt.setString(3, user.getRole().toString());
             stmt.executeUpdate();
-
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     user.setId(generatedKeys.getLong(1));

@@ -15,7 +15,7 @@
                 <TextField fx:id="nameFilterField" />
                 <Label text="Status:" />
                 <ComboBox fx:id="statusFilterComboBox" />
-                <Button onAction="#handleFilter" text="Filter" />
+                <Button text="Filter" onAction="#handleFilter" styleClass="button-primary" />
                 <Button onAction="#clearFilters" text="Clear" />
             </children>
         </HBox>

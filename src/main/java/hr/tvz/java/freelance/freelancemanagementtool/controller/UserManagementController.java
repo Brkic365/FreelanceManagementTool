@@ -46,7 +46,7 @@ public class UserManagementController {
         roleColumn.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getRole()));
 
         roleComboBox.setItems(FXCollections.observableArrayList(UserRole.values()));
-        roleComboBox.setValue(UserRole.FREELANCER); // Default to safer role
+        roleComboBox.setValue(UserRole.FREELANCER);
 
         loadUsers();
     }
@@ -80,18 +80,16 @@ public class UserManagementController {
 
         User newUser = new User(username, password, role);
 
-        // Step 1: Save to the database and get back the user (with ID) and the hashed password.
         Pair<User, String> result = userRepository.saveAndReturnHashedPassword(newUser);
         User savedUser = result.getKey();
         String hashedPassword = result.getValue();
 
-        // Step 2: If the user was saved to the DB (ID > 0), append to the text file.
         if (savedUser.getId() > 0) {
             textFileUserRepository.appendUserToTextFile(savedUser, hashedPassword);
         }
 
         clearInputFields();
-        loadUsers(); // Refresh the table
+        loadUsers();
     }
 
     /**
@@ -118,10 +116,13 @@ public class UserManagementController {
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             userRepository.deleteById(selectedUser.getId());
-            loadUsers(); // Refresh the table
+            loadUsers();
         }
     }
 
+    /**
+     * Clears all input fields.
+     */
     private void clearInputFields() {
         usernameField.clear();
         passwordField.clear();
